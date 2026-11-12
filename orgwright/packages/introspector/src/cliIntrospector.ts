@@ -39,6 +39,14 @@ export interface PicklistFieldDescribe {
   }>;
 }
 
+/** Quote a Windows argv value, then protect it from cmd.exe expansion. */
+function quoteCmdArgument(value: string): string {
+  const escaped = value
+    .replace(/(\\*)"/g, (_match, slashes: string) => `${slashes}${slashes}\\"`)
+    .replace(/(\\+)$/, '$1$1');
+  return `"${escaped}"`.replace(/([()\][%!^"`<>&|;, *?])/g, '^$1');
+}
+
 /**
  * Execute Salesforce CLI command and parse JSON output.
  */
@@ -59,10 +67,13 @@ export async function executeSfCommand(
 
   return new Promise((resolve, reject) => {
     const isWindows = process.platform === 'win32';
-    const command = isWindows ? 'sf.cmd' : 'sf';
+    const command = isWindows ? process.env.ComSpec || 'cmd.exe' : 'sf';
+    const commandArgs = isWindows
+      ? ['/d', '/s', '/c', `"sf.cmd ${args.map(quoteCmdArgument).join(' ')}"`]
+      : args;
 
-    const child = spawn(command, args, {
-      shell: isWindows,
+    const child = spawn(command, commandArgs, {
+      windowsVerbatimArguments: isWindows,
       stdio: ['ignore', 'pipe', 'pipe']
     });
 

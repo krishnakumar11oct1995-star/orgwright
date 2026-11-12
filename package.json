@@ -23,7 +23,8 @@
     "test:parser": "node --test \"orgwright/packages/resolver/test/*.test.mjs\"",
     "fixture:capture": "npx tsx tests-orgwright/capture-fixture.ts",
     "test:codegen": "node --test \"orgwright/packages/codegen/test/*.test.mjs\"",
-    "test:unit": "pnpm --prefix orgwright -r run build && node --test \"orgwright/packages/resolver/test/*.test.mjs\" \"orgwright/packages/codegen/test/*.test.mjs\""
+    "test:unit": "pnpm --prefix orgwright -r run build && node --test \"orgwright/packages/resolver/test/*.test.mjs\" \"orgwright/packages/codegen/test/*.test.mjs\" && npm run test:studio",
+    "test:studio": "pnpm --dir orgwright/apps/studio exec tsx --test server/test/*.test.ts"
   },
   "keywords": [
     "salesforce",

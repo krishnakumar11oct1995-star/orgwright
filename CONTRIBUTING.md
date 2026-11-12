@@ -21,6 +21,12 @@ npm run test:helpers
 
 That runs the helpers against saved Lightning pages in `tests-orgwright/fixtures/`, also without an org.
 
+For Studio org-metadata endpoints, `npm run test:studio` starts the real server
+on a temporary loopback port and puts a controlled fake `sf` command on its PATH.
+It checks HTTP/WebSocket responsiveness, cache/refresh behavior, CLI arguments
+and fallback responses without connecting to Salesforce. These tests also run
+as part of `npm run test:unit`.
+
 ## Where things live
 
 - **A new step phrase** ("Clone this record", "Verify the record is locked"...): the parser is `orgwright/packages/resolver/src/stepParser.ts`, the code it turns into is in `orgwright/packages/codegen/src/stepEmitter.ts`. Add a line to the golden list in `orgwright/packages/resolver/test/parser.test.mjs`, and if you add a new action type, give it a sample in `orgwright/packages/codegen/test/codegen.test.mjs` (that test fails until you do).
